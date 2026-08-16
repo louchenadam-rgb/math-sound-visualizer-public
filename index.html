@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رياضيات الصوت — Mathematics of Sound</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+
+    <!-- Continuous Wave Canvas -->
+    <div id="canvas-container">
+        <canvas id="waveCanvas"></canvas>
+    </div>
+
+    <!-- Digital Grid -->
+    <div id="grid-overlay"></div>
+
+    <!-- Persistent Back Button -->
+    <button id="back-btn" class="back-btn" title="السابق">←</button>
+
+    <!-- Scene Counter -->
+    <div id="scene-counter"></div>
+
+    <!-- ═══════════════ PRESENTATION ═══════════════ -->
+    <div class="presentation-container">
+
+        <!-- ── Scene 1 · Silence ── -->
+        <section class="scene active" id="scene-1" data-scene="1">
+            <div class="math-bg"></div>
+            <div class="math-equations"></div>
+            <div class="content-wrapper text-center">
+                <h1 class="cinematic-text glow-text delay-1">ماذا لو لم يكن هناك صوت؟</h1>
+            </div>
+        </section>
+
+        <!-- ── Scene 2 · First Wave ── -->
+        <section class="scene" id="scene-2" data-scene="2">
+            <div class="math-bg"></div>
+            <div class="math-equations"></div>
+            <div class="content-wrapper text-center">
+                <p class="cinematic-line delay-1" style="font-size: clamp(1.4rem, 3vw, 2.4rem);">كل صوت يبدأ باهتزاز</p>
+                <div class="center-graph delay-2" style="height: 25vh; margin: 40px auto; width: 60vw;">
+                    <canvas class="math-canvas" id="canvas-s2"></canvas>
+                </div>
+                <p class="cinematic-line delay-3">ينتقل هذا الاهتزاز عبر الهواء</p>
+                <p class="cinematic-line delay-4">حتى يصل إلى أذننا كموجة</p>
+            </div>
+        </section>
+
+        <!-- ── Scene 3 · Question ── -->
+        <section class="scene" id="scene-3" data-scene="3">
+            <div class="content-wrapper text-center">
+                <h1 class="cinematic-text delay-1">هل يمكن وصف هذا الاهتزاز...</h1>
+                <h1 class="cinematic-text glow-text blue delay-2 mt-md">رياضيًا؟</h1>
+            </div>
+        </section>
+
+        <!-- ── Scene 4 · Birth of sin(x) ── -->
+        <section class="scene" id="scene-4" data-scene="4">
+            <div class="two-col-layout">
+                <div class="text-col">
+                    <div class="equation-pill blue-pill delay-1">y = sin(x)</div>
+                    <p class="cinematic-line delay-2 mt-sm">دالة تصف حركة دورية</p>
+                    <p class="cinematic-line delay-3">تعبر عن تكرار الاهتزاز</p>
+                    <p class="cinematic-line delay-4">كل نقطة تمثل موقع الحركة</p>
+                </div>
+                <div class="graph-col delay-2">
+                    <canvas class="math-canvas" id="canvas-s4"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Scene 5 · Motion Insight ── -->
+        <section class="scene" id="scene-5" data-scene="5">
+            <div class="content-wrapper top-anchor">
+                <p class="cinematic-line glow blue delay-1">نفس النمط يتكرر</p>
+                <p class="cinematic-line glow blue delay-2">بنفس الزمن</p>
+                <p class="cinematic-line glow blue delay-3">بشكل منتظم</p>
+            </div>
+        </section>
+
+        <!-- ── Scene 6 · Zoom Into Wave ── -->
+        <section class="scene" id="scene-6" data-scene="6">
+            <div class="content-wrapper text-center" style="width: 100%; top: 5%;">
+                <h2 class="cinematic-text delay-1">الموجة ليست شكلاً عشوائيًا</h2>
+                <h2 class="cinematic-line glow blue delay-2 mt-sm">بل هي انعكاس لحركة دائرية منتظمة</h2>
+            </div>
+            <div class="center-graph delay-3" style="height: 60vh;">
+                <canvas class="math-canvas" id="canvas-s6"></canvas>
+            </div>
+        </section>
+
+        <!-- ── Scene 7 · Cosine Shift ── -->
+        <section class="scene" id="scene-7" data-scene="7">
+            <div class="two-col-layout">
+                <div class="text-col">
+                    <div class="equation-pill purple-pill delay-1">y = cos(x)</div>
+                    <p class="cinematic-line delay-2 mt-sm">نفس الموجة</p>
+                    <p class="cinematic-line delay-3">لكن ببداية مختلفة</p>
+                    <p class="cinematic-line delay-4">إزاحة أفقية بمقدار π/2</p>
+                </div>
+                <div class="graph-col delay-2">
+                    <canvas class="math-canvas" id="canvas-s7"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Scene 8 · Overlay Comparison ── -->
+        <section class="scene" id="scene-8" data-scene="8">
+            <div style="position:absolute; top:8%; left:50%; transform:translateX(-50%); text-align:center;">
+                <div class="overlay-label delay-1">
+                    <span class="lbl-sin">sin(x)</span>
+                    <span class="lbl-vs">vs</span>
+                    <span class="lbl-cos">cos(x)</span>
+                </div>
+                <p class="cinematic-line delay-2 mt-sm">موجتان متشابهتان... بفارق زمني (π/2)</p>
+            </div>
+            <div class="center-graph delay-3" style="height: 60vh; margin-top:12vh;">
+                <canvas class="math-canvas" id="canvas-s8"></canvas>
+            </div>
+        </section>
+
+        <!-- ── Scene 9 · Amplitude ── -->
+        <section class="scene" id="scene-9" data-scene="9">
+            <div class="two-col-layout">
+                <div class="text-col">
+                    <h1 class="cinematic-text delay-1">السعة <span class="chip blue-chip">Amplitude</span></h1>
+                    <div class="arrow-wrap delay-2">
+                        <div class="v-arrow">↕</div>
+                        <span class="arrow-label blue">= ارتفاع الموجة</span>
+                    </div>
+                    <p class="cinematic-line dim delay-3 mt-sm">كلما زادت السعة</p>
+                    <p class="cinematic-line dim delay-4">زاد مستوى الصوت (Volume)</p>
+                </div>
+                <div class="graph-col delay-2">
+                    <canvas class="math-canvas" id="canvas-s9"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Scene 10 · Frequency ── -->
+        <section class="scene" id="scene-10" data-scene="10">
+            <div class="two-col-layout">
+                <div class="text-col" style="direction: rtl;">
+                    <h1 class="cinematic-text delay-1">التردد <span class="chip purple-chip">Frequency</span></h1>
+                    <div class="arrow-wrap delay-2">
+                        <div class="h-arrow">↔</div>
+                        <span class="arrow-label purple">= عدد الموجات في الثانية</span>
+                    </div>
+                    <p class="cinematic-line dim delay-3 mt-sm">كلما زاد التردد</p>
+                    <p class="cinematic-line dim delay-4">أصبح الصوت أكثر حدة (Pitch)</p>
+                </div>
+                <div class="graph-col delay-2">
+                    <canvas class="math-canvas" id="canvas-s10"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Scene 11 · Period ── -->
+        <section class="scene" id="scene-11" data-scene="11">
+            <div class="two-col-layout">
+                <div class="text-col">
+                    <h1 class="cinematic-text delay-1">الزمن الدوري <span class="chip blue-chip">T</span></h1>
+                    <p class="cinematic-line glow blue delay-2 mt-sm">دورة كاملة</p>
+                    <p class="cinematic-line delay-3">تتكرر باستمرار</p>
+                    <p class="cinematic-line dim delay-4">يمثل الزمن لعمل موجة واحدة</p>
+                </div>
+                <div class="graph-col delay-1">
+                    <canvas class="math-canvas" id="canvas-s11"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Scene 12 · Transition to Reality ── -->
+        <section class="scene" id="scene-12" data-scene="12">
+            <div class="content-wrapper text-center" style="width: 100%;">
+                <div class="center-graph delay-1" style="height: 35vh; margin: 10px auto; width: 90vw;">
+                    <canvas class="math-canvas" id="canvas-s12-transition"></canvas>
+                </div>
+                <p class="cinematic-line delay-2 mt-md">ليست مجرد معادلة</p>
+                <p class="cinematic-line glow blue delay-3">بل حركة حقيقية في الهواء</p>
+            </div>
+        </section>
+
+        <!-- ── Scene 13 · Sound in Air ── -->
+        <section class="scene" id="scene-13" data-scene="13">
+            <div class="content-wrapper text-center">
+                <p class="cinematic-line delay-1">عندما يهتز جسم</p>
+                <p class="cinematic-line glow blue delay-2">ينقل الطاقة عبر الهواء</p>
+                <p class="cinematic-line delay-3">فنسمع الصوت</p>
+            </div>
+        </section>
+
+        <!-- ── Scene A · What is sound? ── -->
+        <section class="scene" id="scene-A">
+            <div class="content-wrapper text-center">
+                <h1 class="cinematic-text delay-1">ما هو الصوت؟</h1>
+                <div class="center-graph delay-2" style="height: 25vh; margin: 30px auto; width: 60vw;">
+                    <canvas class="math-canvas" id="canvas-sA-vibration"></canvas>
+                </div>
+                <p class="cinematic-line glow blue delay-3 mt-md">طاقة تنتقل عبر وسط</p>
+                <p class="cinematic-line delay-4">ناتجة عن اهتزاز</p>
+            </div>
+        </section>
+
+        <!-- ── Scene 14 · Real-World Sources (FULL REDESIGN) ── -->
+        <section class="scene" id="scene-14" data-scene="14">
+            <div class="sources-grid delay-1">
+
+                <!-- Source A: Person speaking -->
+                <div class="source-card">
+                    <div class="source-icon human-pulse">🗣️</div>
+                    <canvas class="mini-source-wave" id="s14-wave1"
+                        style="width: 100%; height: 80px; margin-top: 16px;"></canvas>
+                    <div class="source-label">صوت الموجات البشرية</div>
+                </div>
+
+                <!-- Source B: Phone ringing -->
+                <div class="source-card source-center">
+                    <div class="source-icon phone-ring">📱</div>
+                    <canvas class="mini-source-wave" id="s14-wave2"
+                        style="width: 100%; height: 80px; margin-top: 16px;"></canvas>
+                    <div class="source-label">ذبذبة الهاتف</div>
+                </div>
+
+                <!-- Source C: Speaker -->
+                <div class="source-card">
+                    <div class="source-icon speaker-boom">🔊</div>
+                    <canvas class="mini-source-wave" id="s14-wave3"
+                        style="width: 100%; height: 80px; margin-top: 16px;"></canvas>
+                    <div class="source-label">موجات مضخمة</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── Scene B · Wave Types ── -->
+        <section class="scene" id="scene-B">
+            <div class="content-wrapper text-center" style="width: 100%;">
+                <h2 class="cinematic-text delay-1">نوعان من الموجات</h2>
+                <div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px;">
+                    <div class="delay-2">
+                        <canvas id="canvas-sB-transverse" style="width: 30vw; height: 15vh;"></canvas>
+                        <p class="cinematic-line mt-sm">عرضية</p>
+                    </div>
+                    <div class="delay-3">
+                        <canvas id="canvas-sB-longitudinal" style="width: 30vw; height: 15vh;"></canvas>
+                        <p class="cinematic-line mt-sm">طولية</p>
+                    </div>
+                </div>
+                <p class="cinematic-line glow blue delay-4 mt-lg">الصوت موجة طولية</p>
+            </div>
+        </section>
+
+        <!-- ── Scene 15 · Sound Propagation in Air ── -->
+        <section class="scene" id="scene-15" data-scene="15">
+            <div class="content-wrapper text-center" style="width: 100%;">
+                <h2 class="cinematic-text delay-1">الصوت ينتقل عبر الهواء</h2>
+                <div class="center-graph delay-2" style="height: 35vh; margin: 30px auto; width: 90vw;">
+                    <canvas class="math-canvas" id="canvas-s15-air"></canvas>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 40px; margin-top: 20px;">
+                    <p class="cinematic-line glow blue delay-3">بشكل موجات طولية</p>
+                    <p class="cinematic-line glow purple delay-4">انضغاط وتخلخل</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Scene C · Compression & Rarefaction ── -->
+        <section class="scene" id="scene-C">
+            <div class="content-wrapper text-center" style="width: 100%;">
+                <div class="center-graph delay-1" style="height: 35vh; margin: 30px auto; width: 90vw;">
+                    <canvas class="math-canvas" id="canvas-sC-particles"></canvas>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 40px; margin-top: 20px;">
+                    <p class="cinematic-line glow blue delay-2">انضغاط</p>
+                    <p class="cinematic-line glow purple delay-3">تخلخل</p>
+                </div>
+                <p class="cinematic-line delay-4 mt-sm">هكذا ينتقل الصوت</p>
+            </div>
+        </section>
+
+        <!-- ── Scene 16 · Full Equation ── -->
+        <section class="scene" id="scene-16" data-scene="16">
+            <div class="content-wrapper text-center">
+                <div class="equation-build delay-1">
+                    <span class="eq-var">y</span>
+                    <span class="eq-eq">=</span>
+                    <span class="eq-a highlight-a">A</span>
+                    <span class="eq-sin">sin(</span>
+                    <span class="eq-w highlight-w">ω</span>
+                    <span class="eq-sin">t)</span>
+                </div>
+                <p class="cinematic-line delay-2 mt-lg">هذه المعادلة تصف حركة النقطة المهتزة عبر الزمن</p>
+                <div class="delay-3" style="display:flex; justify-content:center; gap:30px; margin-top:20px;">
+                    <p class="cinematic-line"><span class="chip blue-chip">A</span> السعة (شدة الصوت)</p>
+                    <p class="cinematic-line"><span class="chip purple-chip">ω</span> التردد (حدة الصوت)</p>
+                    <p class="cinematic-line"><span class="chip"
+                            style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.4); color:#fff; text-shadow:0 0 10px #fff;">t</span>
+                        الزمن المستغرق</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Scene 17 · Parameter A ── -->
+        <section class="scene" id="scene-17" data-scene="17">
+            <div class="content-wrapper text-center">
+                <div class="param-showcase delay-1">
+                    <div class="param-letter blue-param">A</div>
+                    <div class="param-desc">السعة — شدة الصوت</div>
+                </div>
+                <p class="cinematic-line delay-2 mt-md">تتحكم في الارتفاع والانخفاض</p>
+                <p class="cinematic-line dim delay-3">A كبيرة = صوت مرتفع</p>
+            </div>
+        </section>
+
+        <!-- ── Scene 18 · Parameter ω ── -->
+        <section class="scene" id="scene-18" data-scene="18">
+            <div class="content-wrapper text-center">
+                <div class="param-showcase delay-1">
+                    <div class="param-letter purple-param">ω</div>
+                    <div class="param-desc">الزاوية — التردد الزاوي</div>
+                </div>
+                <p class="cinematic-line delay-2 mt-md">تتحكم في الضغط والتمدد</p>
+                <p class="cinematic-line dim delay-3">ω كبيرة = صوت أكثر حدة</p>
+                <p class="cinematic-line glow purple delay-4 mt-sm">التردد الزاوي يحدد سرعة التغير</p>
+                <p class="cinematic-line delay-5">كلما زاد، تسارعت الموجة</p>
+                <p class="cinematic-line delay-6">ويزداد عدد الاهتزازات</p>
+            </div>
+        </section>
+
+        <!-- ── Scene 19 · Frequency Comparison (FULL REDESIGN) ── -->
+        <section class="scene" id="scene-19" data-scene="19">
+            <div class="freq-split-wrapper">
+
+                <!-- Column 1: sin(x) Normal freq -->
+                <div class="freq-col">
+                    <div class="freq-canvas-zone" id="mini-canvas-1"></div>
+                    <div class="freq-badge high-badge delay-1">sin(2x)</div>
+                    <p class="freq-label delay-2">تردد مرتفع</p>
+                </div>
+
+                <!-- Divider -->
+                <div class="freq-divider"></div>
+
+                <!-- Column 2: sin(2x) High freq -->
+                <div class="freq-col">
+                    <div class="freq-canvas-zone" id="mini-canvas-2"></div>
+                    <div class="freq-badge normal-badge delay-1">sin(x)</div>
+                    <p class="freq-label delay-2">تردد عادي</p>
+                </div>
+
+                <!-- Divider -->
+                <div class="freq-divider"></div>
+
+                <!-- Column 3: sin(0.5x) Low freq -->
+                <div class="freq-col">
+                    <div class="freq-canvas-zone" id="mini-canvas-3"></div>
+                    <div class="freq-badge low-badge delay-1">sin(0.5x)</div>
+                    <p class="freq-label delay-2">تردد منخفض</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── Scene D · Complex Sound ── -->
+        <section class="scene" id="scene-D">
+            <div class="content-wrapper text-center">
+                <h2 class="cinematic-text delay-1">الصوت ليس بسيطًا</h2>
+                <div class="center-graph delay-2" style="height: 40vh; margin: 30px auto; width: 80vw;">
+                    <canvas class="math-canvas" id="canvas-sD-complex"></canvas>
+                </div>
+                <p class="cinematic-line glow blue delay-3">مزيج من موجات</p>
+                <p class="cinematic-line delay-4">يشكل نغمة كاملة</p>
+            </div>
+        </section>
+
+        <!-- ── Scene 20 · Wave → Coordinate → sin(x) ── -->
+        <section class="scene" id="scene-20" data-scene="20">
+            <div class="scene19-layout" style="justify-content: center; width: 100%;">
+                <div class="center-graph delay-2" style="width: 100vw; height: 100vh; margin: 0;">
+                    <canvas id="canvas-s19-mapping" class="math-canvas"></canvas>
+                </div>
+            </div>
+            <div class="content-wrapper text-center" style="position:absolute; top: 12%; width: 100%;">
+                <p class="cinematic-line glow blue delay-3">الموجات تمثل حركة حقيقية</p>
+                <p class="cinematic-line delay-4 mt-sm">يمكن قياسها وتحليلها</p>
+                <p class="cinematic-line dim delay-5">وهذا ما يسمح بفهم الصوت</p>
+            </div>
+        </section>
+
+        <!-- ── Scene 21 · Intro Before Audio ── -->
+        <section class="scene" id="scene-21" data-scene="21">
+            <div class="content-wrapper text-center">
+                <h1 class="cinematic-text delay-1">الأصوات تختلف حسب التردد</h1>
+                <p class="cinematic-line glow blue delay-2 mt-md">لنستمع للفروقات...</p>
+            </div>
+        </section>
+
+        <!-- ── Scene 22 · Interactive Audio ── -->
+        <section class="scene" id="scene-22" data-scene="22">
+            <div class="audio-stage">
+                <h2 class="audio-title delay-1">انقر للاستماع</h2>
+                <div class="audio-grid delay-2">
+
+                    <div class="audio-card low-card">
+                        <div class="audio-icon">🔉</div>
+                        <button class="audio-btn" data-freq="low">
+                            <span class="btn-label">صوت منخفض</span>
+                            <span class="btn-hz">220 Hz</span>
+                        </button>
+                        <canvas class="mini-wave" id="wave-low"></canvas>
+                    </div>
+
+                    <div class="audio-card mid-card">
+                        <div class="audio-icon">🎵</div>
+                        <button class="audio-btn" data-freq="med">
+                            <span class="btn-label">صوت متوسط</span>
+                            <span class="btn-hz">440 Hz</span>
+                        </button>
+                        <canvas class="mini-wave" id="wave-med"></canvas>
+                    </div>
+
+                    <div class="audio-card high-card">
+                        <div class="audio-icon">🔔</div>
+                        <button class="audio-btn" data-freq="high">
+                            <span class="btn-label">صوت حاد</span>
+                            <span class="btn-hz">880 Hz</span>
+                        </button>
+                        <canvas class="mini-wave" id="wave-high"></canvas>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Scene E · Music & Math ── -->
+        <section class="scene" id="scene-E">
+            <div class="content-wrapper text-center" style="width: 100%;">
+                <h1 class="cinematic-text ultimate-glow delay-1">الموسيقى رياضيات</h1>
+                <div class="center-graph delay-2" style="height: 30vh; margin: 30px auto; width: 80vw;">
+                    <canvas class="math-canvas" id="canvas-sE-music"></canvas>
+                </div>
+                <p class="cinematic-line delay-3 mt-md">كل نغمة لها تردد</p>
+                <p class="cinematic-line delay-4">كل لحن موجة</p>
+                <p class="cinematic-line glow blue delay-5 mt-md">الرسم البياني يمثل تغير الإشارة</p>
+                <p class="cinematic-line delay-6">كل نقطة تعبر عن حالة في الزمن</p>
+                <p class="cinematic-line dim delay-7">وهذا يربط الرياضيات بالواقع</p>
+            </div>
+        </section>
+
+        <!-- ── Scene 23 · Cinematic Ending ── -->
+        <section class="scene" id="scene-23" data-scene="23">
+            <div class="content-wrapper text-center">
+                <h1 class="cinematic-text ultimate-glow delay-1">الرياضيات... لغة ما نسمعه</h1>
+                <p class="cinematic-line glow blue delay-2 mt-lg">الصوت يمكن تحليله رياضيًا</p>
+                <p class="cinematic-line delay-3">كل موجة لها تمثيل دقيق</p>
+                <p class="cinematic-line dim delay-4 mt-sm">الرياضيات تفسر ما نسمعه</p>
+            </div>
+        </section>
+
+
+    </div><!-- /presentation-container -->
+
+    <!-- UI Chrome -->
+    <div class="nav-hint">→ السهم / نقرة للمتابعة</div>
+    <div class="progress-track">
+        <div id="progress-bar"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

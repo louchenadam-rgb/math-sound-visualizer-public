@@ -1,0 +1,626 @@
+/* ══════════════════════════════════════════════
+   MATHEMATICS OF SOUND — CINEMATIC STYLESHEET
+   ══════════════════════════════════════════════ */
+
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body, html {
+    width: 100%; height: 100%;
+    background: #04040a;
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+    overflow: hidden;
+    direction: rtl;
+}
+
+/* ─── Radial ambient glow ─── */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%,
+        rgba(8, 20, 60, 0.6) 0%,
+        rgba(4, 4, 10, 1) 70%);
+    z-index: 0; pointer-events: none;
+}
+
+/* ─── Digital grid ─── */
+#grid-overlay {
+    position: fixed; inset: 0;
+    background-size: 48px 48px;
+    background-image:
+        linear-gradient(to right,  rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
+    z-index: 1; pointer-events: none;
+}
+
+/* ─── Wave canvas ─── */
+#canvas-container {
+    position: fixed; inset: 0;
+    z-index: 2;
+    transition: transform 2.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+#waveCanvas { width: 100%; height: 100%; }
+
+/* Scene-6 zoom trick: scale canvas when scene 6 is active */
+body.scene-zoom #canvas-container {
+    transform: scale(2.8) translate(5%, 0);
+}
+
+/* ─── Presentation layer ─── */
+.presentation-container {
+    position: fixed; inset: 0;
+    z-index: 10;
+}
+
+/* ══════════════════════════════
+   SCENES
+══════════════════════════════ */
+.scene {
+    position: absolute; inset: 0;
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none;
+    transition:
+        opacity 1s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 1.4s cubic-bezier(0.19, 1, 0.22, 1);
+    transform: scale(1.04) translateY(18px);
+}
+.scene.active   { opacity: 1; pointer-events: auto; transform: scale(1) translateY(0); }
+.scene.exit     { opacity: 0; transform: scale(0.96) translateY(-18px); }
+
+/* ══════════════════════════════
+   BACK BUTTON
+══════════════════════════════ */
+.back-btn {
+    position: fixed; top: 20px; left: 20px;
+    width: 48px; height: 48px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 22px; cursor: pointer; color: #fff;
+    z-index: 200;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+    backdrop-filter: blur(8px);
+}
+.back-btn:hover {
+    background: rgba(0,229,255,0.2);
+    box-shadow: 0 0 18px rgba(0,229,255,0.5);
+    transform: scale(1.12);
+}
+
+/* ─── Scene counter ─── */
+#scene-counter {
+    position: fixed; top: 22px; right: 24px;
+    font-size: 1rem; color: rgba(255,255,255,0.3);
+    z-index: 200; font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 2px;
+}
+
+/* ══════════════════════════════
+   LAYOUT HELPERS
+══════════════════════════════ */
+.content-wrapper {
+    position: relative; width: 82%; max-width: 1100px; padding: 40px;
+    z-index: 10;
+}
+.text-center    { text-align: center; }
+.bottom-anchor  { position: absolute; bottom: 12%; right: 10%; text-align: right; }
+.top-anchor     { position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+                  text-align: center; width: 90%; }
+.bottom-center  { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%);
+                  text-align: center; width: 90%; }
+.left-anchor    { position: absolute; left: 8%; top: 50%; transform: translateY(-50%);
+                  text-align: left; direction: ltr; }
+
+.mt-sm  { margin-top: 14px; }
+.mt-md  { margin-top: 28px; }
+.mt-lg  { margin-top: 44px; }
+
+/* ══════════════════════════════
+   TYPOGRAPHY
+══════════════════════════════ */
+.cinematic-text {
+    font-size: clamp(2rem, 4vw, 3.8rem);
+    font-weight: 700; line-height: 1.35;
+    text-shadow: 0 0 24px rgba(255,255,255,0.15);
+}
+.cinematic-line {
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    font-weight: 300; color: #b8cde0;
+    line-height: 1.6; margin-top: 12px;
+}
+.cinematic-line.glow.blue  { color: #00e5ff; text-shadow: 0 0 16px rgba(0,229,255,0.6); }
+.cinematic-line.glow.purple{ color: #d500f9; text-shadow: 0 0 16px rgba(213,0,249,0.6); }
+.cinematic-line.dim        { color: rgba(255,255,255,0.55); }
+
+.glow-text         { text-shadow: 0 0 22px rgba(255,255,255,0.4); }
+.glow-text.blue    { color: #00e5ff; text-shadow: 0 0 24px rgba(0,229,255,0.7); }
+.glow-text.purple  { color: #d500f9; text-shadow: 0 0 24px rgba(213,0,249,0.7); }
+.ultimate-glow     { color: #fff;
+    text-shadow: 0 0 30px #00e5ff, 0 0 60px #d500f9, 0 0 100px rgba(213,0,249,0.4); }
+
+/* Chips / labels */
+.chip {
+    display: inline-block; padding: 4px 16px; border-radius: 20px;
+    font-size: 0.75em; font-weight: 700; vertical-align: middle;
+    font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;
+}
+.blue-chip   { background: rgba(0,229,255,0.15); border: 1px solid rgba(0,229,255,0.5);
+               color: #00e5ff; text-shadow: 0 0 10px #00e5ff; }
+.purple-chip { background: rgba(213,0,249,0.15); border: 1px solid rgba(213,0,249,0.5);
+               color: #d500f9; text-shadow: 0 0 10px #d500f9; }
+
+/* ──── Equation Pill ──── */
+.equation-pill {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(1.8rem, 3.5vw, 3rem);
+    font-weight: 700;
+    padding: 12px 36px; border-radius: 14px;
+    background: rgba(0,0,0,0.55);
+    direction: ltr;
+}
+.blue-pill   { border: 1px solid rgba(0,229,255,0.4); color: #00e5ff;
+               box-shadow: 0 0 28px rgba(0,229,255,0.25), inset 0 0 20px rgba(0,229,255,0.05); }
+.purple-pill { border: 1px solid rgba(213,0,249,0.4); color: #d500f9;
+               box-shadow: 0 0 28px rgba(213,0,249,0.25), inset 0 0 20px rgba(213,0,249,0.05); }
+
+/* ──── Overlay label (Scene 8) ──── */
+.overlay-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(1.6rem, 3vw, 2.6rem);
+    display: flex; gap: 20px; align-items: center; justify-content: center;
+    direction: ltr;
+}
+.lbl-sin { color: #00e5ff; text-shadow: 0 0 16px #00e5ff; }
+.lbl-cos { color: #d500f9; text-shadow: 0 0 16px #d500f9; }
+.lbl-vs  { color: rgba(255,255,255,0.35); font-size: 0.7em; }
+
+/* ──── Amplitude arrows (Scene 9) ──── */
+.arrow-wrap { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+.v-arrow {
+    font-size: 3rem; color: #00e5ff;
+    text-shadow: 0 0 20px #00e5ff;
+    animation: bounce-v 1.8s ease-in-out infinite;
+}
+.h-arrow {
+    font-size: 3rem; color: #d500f9;
+    text-shadow: 0 0 20px #d500f9;
+    animation: bounce-h 1.8s ease-in-out infinite;
+}
+.arrow-label       { font-size: 1.6rem; font-weight: 600; }
+.arrow-label.blue  { color: #00e5ff; }
+.arrow-label.purple{ color: #d500f9; }
+
+@keyframes bounce-v { 0%,100%{transform:translateY(0)}  50%{transform:translateY(-10px)} }
+@keyframes bounce-h { 0%,100%{transform:translateX(0)}  50%{transform:translateX( 10px)} }
+
+/* ──── Cycle highlight (Scene 11) ──── */
+.cycle-highlight-box {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -60%);
+    width: min(560px, 70vw); height: 220px;
+    border: 2px dashed rgba(0,229,255,0.7);
+    border-radius: 12px;
+    box-shadow: inset 0 0 40px rgba(0,229,255,0.1), 0 0 20px rgba(0,229,255,0.15);
+    pointer-events: none;
+}
+.cycle-labels { text-align: center; margin-top: 160px; }
+.cycle-bracket {
+    font-size: 1.4rem; color: #00e5ff;
+    text-shadow: 0 0 12px #00e5ff;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* ──── Multi-ring particles (Scene 12) ──── */
+.multi-rings {
+    position: absolute; top: 40%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+.p-ring {
+    position: absolute; border-radius: 50%;
+    border: 2px solid rgba(0,229,255,0.7);
+    box-shadow: 0 0 20px rgba(0,229,255,0.4), inset 0 0 10px rgba(0,229,255,0.2);
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+}
+.r1 { width: 120px; height: 120px; animation: ring-out 3.5s 0s    infinite cubic-bezier(0.1, 0.5, 0.4, 1); }
+.r2 { width: 120px; height: 120px; animation: ring-out 3.5s 1.1s  infinite cubic-bezier(0.1, 0.5, 0.4, 1); }
+.r3 { width: 120px; height: 120px; animation: ring-out 3.5s 2.2s  infinite cubic-bezier(0.1, 0.5, 0.4, 1); }
+@keyframes ring-out {
+    0%   { transform: translate(-50%,-50%) scale(0.4); opacity: 1; border-width: 4px; }
+    50%  { opacity: 0.6; }
+    100% { transform: translate(-50%,-50%) scale(3.5); opacity: 0; border-width: 0.5px; }
+}
+
+/* ══════════════════════════════
+   SCENE 14 — REAL SOURCES
+══════════════════════════════ */
+.sources-grid {
+    display: flex; justify-content: center; align-items: flex-end;
+    gap: 0; width: 100vw; height: 100vh;
+    padding: 0;
+}
+.source-card {
+    flex: 1;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    height: 100%; padding: 40px 20px;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    position: relative; overflow: hidden;
+    transition: background 0.4s;
+}
+.source-card:last-child { border-right: none; }
+.source-card:hover { background: rgba(0,229,255,0.04); }
+
+.source-icon { font-size: clamp(4rem, 7vw, 6rem); z-index: 2; }
+.source-label {
+    margin-top: 20px; font-size: 1.5rem; color: rgba(255,255,255,0.6);
+    z-index: 2; letter-spacing: 1px;
+}
+
+/* Human voice: subtle horizontal wave bars becoming longitudinal */
+.source-waves {
+    display: flex; gap: 8px; align-items: center;
+    margin-top: 16px; z-index: 2; height: 60px;
+}
+.human-waves { flex-direction: row; align-items: center; justify-content: center; width: 80px; }
+.human-waves span {
+    width: 6px; border-radius: 6px; background: rgba(0,229,255,0.8);
+    box-shadow: 0 0 10px rgba(0,229,255,0.5);
+    animation: longitudinal 1.2s ease-in-out infinite alternate;
+}
+.human-waves span:nth-child(1) { height: 30px; animation-delay: 0s; }
+.human-waves span:nth-child(2) { height: 30px; animation-delay: 0.2s; }
+.human-waves span:nth-child(3) { height: 30px; animation-delay: 0.4s; }
+@keyframes longitudinal { 0% { transform: translateX(-8px) scaleX(0.5); opacity: 0.5; } 100% { transform: translateX(8px) scaleX(1.5); opacity: 1; } }
+
+/* Phone: ring circles (Transverse-like spreading) */
+.ring-circles { position: relative; width: 120px; height: 60px; margin-top: 16px; z-index: 2; }
+.rc {
+    position: absolute; border-radius: 50%;
+    border: 2px solid rgba(176,196,222,0.8);
+    top:50%; left:50%; transform: translate(-50%,-50%);
+    animation: phone-ring 2.5s cubic-bezier(0.1,0.5,0.3,1) infinite;
+}
+.rc1 { width:20px; height:20px; animation-delay: 0s; }
+.rc2 { width:20px; height:20px; animation-delay: 0.8s; }
+.rc3 { width:20px; height:20px; animation-delay: 1.6s; }
+@keyframes phone-ring {
+    0%  { transform:translate(-50%,-50%) scale(0.5); opacity:1; border-width: 3px; }
+    100%{ transform:translate(-50%,-50%) scale(3.5); opacity:0; border-width: 0.5px; }
+}
+
+/* Speaker: Directional arcs */
+.speaker-waves { display: flex; gap: 6px; align-items: center; margin-top: 16px; z-index: 2; overflow: hidden; padding-right: 15px; }
+.speaker-waves span {
+    width: 20px; height: 20px; border-radius: 50%; border: 3px solid transparent;
+    border-right-color: rgba(213,0,249,1);
+    box-shadow: 3px 0 10px rgba(213,0,249,0.3);
+    animation: spk-arc 1.5s linear infinite; opacity: 0;
+}
+.speaker-waves span:nth-child(1){ transform: scale(1); animation-delay:0s; }
+.speaker-waves span:nth-child(2){ transform: scale(1.5); animation-delay:0.3s; }
+.speaker-waves span:nth-child(3){ transform: scale(2); animation-delay:0.6s; }
+.speaker-waves span:nth-child(4){ transform: scale(2.5); animation-delay:0.9s; }
+@keyframes spk-arc {
+    0% { transform: scale(0.5) translateX(-10px); opacity: 1; border-right-width: 4px; }
+    100% { transform: scale(3.5) translateX(10px); opacity: 0; border-right-width: 1px; }
+}
+
+/* Animations */
+.human-pulse { animation: subtle-pulse 2s ease-in-out infinite; }
+.phone-ring  { animation: subtle-float 3s ease-in-out infinite; }
+.speaker-boom{ animation: spk-shake 0.15s ease-in-out infinite; }
+@keyframes subtle-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+@keyframes subtle-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes spk-shake    { 0%,100%{transform:translateX(0)} 50%{transform:translateX(3px)} }
+.source-center { background: rgba(255,255,255,0.02); }
+
+/* ══════════════════════════════
+   SCENE 15 – Equation Builder
+══════════════════════════════ */
+.equation-build {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 700;
+    direction: ltr; display: flex; gap: 6px;
+    justify-content: center; align-items: baseline; flex-wrap: wrap;
+}
+.eq-a.highlight-a { color: #00e5ff; text-shadow: 0 0 18px #00e5ff; }
+.eq-w.highlight-w { color: #d500f9; text-shadow: 0 0 18px #d500f9; }
+.eq-eq, .eq-sin, .eq-var { color: rgba(255,255,255,0.8); }
+
+/* ══════════════════════════════
+   SCENE 16 & 17 – Param showcase
+══════════════════════════════ */
+.param-showcase {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 16px;
+}
+.param-letter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(5rem, 10vw, 9rem); font-weight: 900;
+    line-height: 1; animation: param-breathe 2s ease-in-out infinite;
+}
+.blue-param   { color: #00e5ff; text-shadow: 0 0 40px #00e5ff, 0 0 80px rgba(0,229,255,0.3); }
+.purple-param { color: #d500f9; text-shadow: 0 0 40px #d500f9, 0 0 80px rgba(213,0,249,0.3); }
+.param-desc   { font-size: 1.4rem; color: rgba(255,255,255,0.5); letter-spacing: 2px; }
+@keyframes param-breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+
+/* ══════════════════════════════
+   SCENE 18 – Freq Split
+══════════════════════════════ */
+.freq-split-wrapper {
+    display: flex; width: 100vw; height: 100vh;
+    align-items: center; padding: 0;
+}
+.freq-col {
+    flex: 1; height: 100%;
+    display: flex; flex-direction: column;
+    justify-content: flex-end; align-items: center;
+    padding-bottom: 60px;
+    position: relative;
+}
+.freq-divider {
+    width: 1px; height: 60%;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1), transparent);
+    flex-shrink: 0;
+}
+.freq-canvas-zone {
+    position: absolute; inset: 0;
+    pointer-events: none;
+}
+.freq-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 700;
+    padding: 8px 24px; border-radius: 30px;
+    background: rgba(0,0,0,0.5);
+    margin-bottom: 10px;
+}
+.normal-badge { border: 1px solid rgba(0,229,255,0.5); color: #00e5ff;
+                box-shadow: 0 0 18px rgba(0,229,255,0.2); }
+.high-badge   { border: 1px solid rgba(213,0,249,0.5); color: #d500f9;
+                box-shadow: 0 0 18px rgba(213,0,249,0.2); }
+.low-badge    { border: 1px solid rgba(100,200,150,0.5); color: #64c896;
+                box-shadow: 0 0 18px rgba(100,200,150,0.2); }
+.freq-label   { font-size: 1.2rem; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+/* ══════════════════════════════
+   SCENE 19 – Coord Layout
+══════════════════════════════ */
+.scene19-layout {
+    width: 100vw; height: 100vh;
+    display: flex; align-items: center; justify-content: flex-start;
+    padding: 0 5%;
+    direction: ltr;
+}
+.scene19-speaker {
+    display: flex; flex-direction: column;
+    align-items: center; flex-shrink: 0;
+    position: relative; margin-right: 40px;
+}
+.spk-icon { font-size: 5rem; animation: spk-shake 0.12s infinite; z-index: 2; }
+.spk-rings { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); }
+.spk-r {
+    position: absolute; border-radius: 50%;
+    border: 1.5px solid rgba(0,229,255,0.4);
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+}
+.spk-r1 { width: 80px;  height: 80px;  animation: ring-out 2.5s 0s   infinite; }
+.spk-r2 { width: 80px;  height: 80px;  animation: ring-out 2.5s 0.7s infinite; }
+.spk-r3 { width: 80px;  height: 80px;  animation: ring-out 2.5s 1.4s infinite; }
+
+.scene19-coord {
+    position: relative; flex: 1; height: 60vh;
+    border-left: 2px solid rgba(255,255,255,0.35);
+    border-bottom: 2px solid rgba(255,255,255,0.35);
+    border-radius: 0 0 0 8px;
+    overflow: visible;
+}
+.scene19-coord canvas {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+}
+.coord-label-x {
+    position: absolute; right: -26px; bottom: -6px;
+    color: rgba(255,255,255,0.5); font-size: 1.1rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+.coord-label-y {
+    position: absolute; left: -20px; top: -26px;
+    color: rgba(255,255,255,0.5); font-size: 1.1rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+.coord-eq {
+    position: absolute; top: 16px; right: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.4rem; color: #00e5ff;
+    text-shadow: 0 0 12px #00e5ff;
+    background: rgba(0,0,0,0.5); padding: 6px 18px;
+    border-radius: 8px;
+}
+
+/* ══════════════════════════════
+   SCENE 21 – Interactive Audio
+══════════════════════════════ */
+.audio-stage {
+    width: 100%; padding: 20px;
+    display: flex; flex-direction: column; align-items: center;
+}
+.audio-title {
+    font-size: 1.6rem; color: rgba(255,255,255,0.4);
+    letter-spacing: 3px; margin-bottom: 32px;
+    text-transform: uppercase;
+}
+.audio-grid {
+    display: flex; gap: 30px; justify-content: center;
+    align-items: stretch; width: 90%; flex-wrap: wrap;
+}
+.audio-card {
+    flex: 1; min-width: 200px; max-width: 300px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    padding: 28px 20px; border-radius: 20px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.audio-card:hover { transform: translateY(-6px); }
+
+.low-card  { border-color: rgba(100,200,150,0.3); }
+.mid-card  { border-color: rgba(0,229,255,0.3); }
+.high-card { border-color: rgba(213,0,249,0.3); }
+
+.low-card:hover  { box-shadow: 0 0 30px rgba(100,200,150,0.25); }
+.mid-card:hover  { box-shadow: 0 0 30px rgba(0,229,255,0.25); }
+.high-card:hover { box-shadow: 0 0 30px rgba(213,0,249,0.25); }
+
+.audio-icon { font-size: 2.8rem; }
+
+.audio-btn {
+    background: rgba(0,0,0,0.4); border-radius: 12px;
+    color: #fff; font-family: 'Cairo', sans-serif;
+    cursor: pointer; outline: none;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 14px 24px; width: 100%;
+    transition: all 0.25s;
+}
+.low-card  .audio-btn { border: 1.5px solid rgba(100,200,150,0.5); }
+.mid-card  .audio-btn { border: 1.5px solid rgba(0,229,255,0.5); }
+.high-card .audio-btn { border: 1.5px solid rgba(213,0,249,0.5); }
+
+.low-card  .audio-btn:hover,.low-card  .audio-btn.playing
+  { background:rgba(100,200,150,0.2); box-shadow:0 0 20px rgba(100,200,150,0.4); }
+.mid-card  .audio-btn:hover,.mid-card  .audio-btn.playing
+  { background:rgba(0,229,255,0.2);   box-shadow:0 0 20px rgba(0,229,255,0.4); }
+.high-card .audio-btn:hover,.high-card .audio-btn.playing
+  { background:rgba(213,0,249,0.2);   box-shadow:0 0 20px rgba(213,0,249,0.4); }
+
+.btn-label { font-size: 1.4rem; font-weight: 700; }
+.btn-hz    { font-size: 0.95rem; color: rgba(255,255,255,0.45);
+             font-family: 'JetBrains Mono', monospace; }
+
+.mini-wave { width: 100%; height: 60px; }
+
+/* ══════════════════════════════
+   DELAY ENTRANCE ANIMATIONS
+══════════════════════════════ */
+.scene .delay-1,
+.scene .delay-2,
+.scene .delay-3,
+.scene .delay-4 {
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.scene.active .delay-1 { opacity:1; transform:translateY(0); transition-delay:0.5s; }
+.scene.active .delay-2 { opacity:1; transform:translateY(0); transition-delay:2.0s; }
+.scene.active .delay-3 { opacity:1; transform:translateY(0); transition-delay:3.4s; }
+.scene.active .delay-4 { opacity:1; transform:translateY(0); transition-delay:4.8s; }
+
+/* ══════════════════════════════
+   MATH LAYOUT & EXPERIMENTS 
+══════════════════════════════ */
+.math-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(10, 25, 40, 0.8) 0%, #04040a 100%);
+    background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 1; pointer-events: none;
+    opacity: 0; transition: opacity 1s;
+}
+.scene.active .math-bg { opacity: 1; }
+.math-equations {
+    position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; opacity: 0; transition: opacity 1s;
+}
+.scene.active .math-equations { opacity: 1; }
+.math-equations::before {
+    content: "∂²y/∂t² = v²(∂²y/∂x²)      f = 1/T      ω = 2πf      y(x,t) = A·sin(kx - ωt + φ)      E = ½kA²          ∫sin(x)dx = -cos(x)      e^(iπ)+1 = 0      ∇²p = (1/c²)∂²p/∂t²      λ = v/f";
+    font-family: 'JetBrains Mono', monospace; color: rgba(255,255,255,0.05);
+    font-size: 1.4rem; position: absolute; width: 150%; top: 20%; left: -10%; text-align: justify;
+    line-height: 5; transform: rotate(-8deg); white-space: pre-wrap;
+}
+
+.two-col-layout {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 90vw; max-width: 1200px; padding: 0 5%; z-index: 10;
+}
+.text-col { flex: 0.45; text-align: right; direction: rtl; }
+.graph-col { flex: 0.55; height: 65vh; position: relative; }
+.center-graph { width: 80vw; height: 50vh; margin: 40px auto 0; position: relative; z-index: 10; }
+.math-canvas { width: 100%; height: 100%; display: block; filter: drop-shadow(0 0 10px rgba(0,229,255,0.3)); }
+
+.vib-illustration {
+    display: flex; align-items: center; justify-content: center;
+    margin: 40px 0; gap: 20px;
+}
+.vib-dot {
+    width: 20px; height: 20px; background: #00e5ff; border-radius: 50%;
+    box-shadow: 0 0 20px #00e5ff;
+    animation: vib-osc 0.5s ease-in-out infinite alternate;
+}
+.vib-waves {
+    width: 100px; height: 40px; border-left: none;
+    border-radius: 50%; border: 2px solid rgba(0,229,255,0.5);
+    animation: vib-prop 1.5s linear infinite; opacity: 0;
+}
+@keyframes vib-osc { 0% { transform: translateX(-20px); } 100% { transform: translateX(20px); } }
+@keyframes vib-prop { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+
+/* ══════════════════════════════
+   UI CHROME
+══════════════════════════════ */
+.nav-hint {
+    position: fixed; bottom: 18px; left: 0; right: 0;
+    text-align: center; direction: rtl;
+    font-size: 0.85rem; color: rgba(255,255,255,0.2);
+    z-index: 200; letter-spacing: 1px;
+}
+.progress-track {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 3px; background: rgba(255,255,255,0.05); z-index: 200;
+}
+#progress-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #00e5ff, #d500f9);
+    transition: width 0.6s ease;
+    box-shadow: 0 0 8px #00e5ff;
+}
+
+/* ══════════════════════════════
+   SCENE 24 – Credits
+══════════════════════════════ */
+.credits-container {
+    display: flex; flex-direction: column; gap: 16px; width: 100%;
+}
+.credit-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 30px; border-radius: 12px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.3s, background 0.3s;
+}
+.credit-row:hover { background: rgba(0,229,255,0.05); transform: translateX(-4px); }
+.lead-credit {
+    background: rgba(0,229,255,0.08); 
+    border: 1px solid rgba(0,229,255,0.2); 
+    padding: 18px 30px; margin-bottom: 8px;
+}
+.credit-name {
+    font-size: 1.5rem; font-weight: 700; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+.lead-credit .credit-name { font-size: 1.8rem; color: #00e5ff; text-shadow: 0 0 15px #00e5ff; }
+.credit-role {
+    font-size: 1.3rem; color: rgba(255,255,255,0.5); font-weight: 300; text-align: left;
+}
+.lead-credit .credit-role { font-size: 1.4rem; color: #b8cde0; }
+
+.scene .delay-5, .scene .delay-6, .scene .delay-7 {
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.scene.active .delay-5 { opacity:1; transform:translateY(0); transition-delay:6.0s; }
+.scene.active .delay-6 { opacity:1; transform:translateY(0); transition-delay:7.2s; }
+.scene.active .delay-7 { opacity:1; transform:translateY(0); transition-delay:8.4s; }
