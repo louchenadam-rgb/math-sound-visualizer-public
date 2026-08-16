@@ -1,0 +1,44 @@
+   <!-- ── Scene 24 · Project Team ── -->
+        <section class="scene" id="scene-24" data-scene="24">
+            <div class="content-wrapper text-center" style="width: 100%; max-width: 900px; margin: auto;">
+                <h1 class="cinematic-text ultimate-glow delay-1">فريق العمل</h1>
+                
+                <div class="credits-container mt-lg">
+                    <!-- Row 1 -->
+                    <div class="credit-row delay-2 lead-credit">
+                        <div class="credit-name">...name...</div>
+                        <div class="credit-role">المشرف على المشروع البصري والمبرمج للموقع</div>
+                    </div>
+                    
+                    <!-- Row 2 -->
+                    <div class="credit-row delay-3">
+                        <div class="credit-name">...name...</div>
+                        <div class="credit-role">صاحب الأفكار والنموذج الأولي</div>
+                    </div>
+                    
+                    <!-- Row 3 -->
+                    <div class="credit-row delay-4">
+                        <div class="credit-name">...name...</div>
+                        <div class="credit-role">المشرف على البحث الكتابي</div>
+                    </div>
+                    
+                    <!-- Row 4 -->
+                    <div class="credit-row delay-5">
+                        <div class="credit-name">...name...</div>
+                        <div class="credit-role">المشرف على أفكار البحث الكتابي</div>
+                    </div>
+                    
+                    <!-- Row 5 -->
+                    <div class="credit-row delay-6">
+                        <div class="credit-name">...name...</div>
+                        <div class="credit-role">المشرف على الملخص</div>
+                    </div>
+                    
+                    <!-- Row 6 -->
+                    <div class="credit-row delay-7">
+                        <div class="credit-name">...name...</div>
+                        <div class="credit-role">المشرف على أفكار الملخص</div>
+                    </div>
+                </div>
+            </div>
+        </section>
