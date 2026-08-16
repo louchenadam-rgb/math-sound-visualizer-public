@@ -21,3 +21,7 @@ This project is open-source and free to use for educational purposes. Feel free 
 
 ## 🚀 How to Run
 Simply open `index.html` in any web browser, or launch it via GitHub Pages.
+## 📄 Template Files / القوالب المتاحة
+
+* **`the team`**: A pre-formatted template for team credits and project attributions. 
+  *(ملف قالب جاهز يحتوي على هيكل لأسماء فريق العمل والمساهمين؛ يمكنك تعديل النقاط `...name...` وإضافة أسماء فريقك بسهولة).*
